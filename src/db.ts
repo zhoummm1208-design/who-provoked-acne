@@ -39,3 +39,10 @@ export async function ensureDay(localDate: string): Promise<DayRecord> {
 export async function clearAllData() {
   await db.transaction('rw', db.tables, async () => { for (const table of db.tables) await table.clear() })
 }
+
+export async function getDishesSorted(): Promise<Dish[]> {
+  const dishes = await db.dishes.toArray()
+  return dishes.sort((a, b) =>
+    (b.lastEatenDate ?? '').localeCompare(a.lastEatenDate ?? '') || b.createdAt - a.createdAt
+  )
+}
